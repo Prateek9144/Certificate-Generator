@@ -1,7 +1,7 @@
 import pygame
 from setup import *
 import os
-
+import pandas as pd
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw 
@@ -15,7 +15,7 @@ def center_xy(text,xy):
 	#print fsize_x,fsize_y
 	return (x,y)
 
-def map_xy((x,y)):
+def map_xy(x,y):
 
 	x = float(x)
 	y = float(y)
@@ -43,37 +43,24 @@ def map_xy((x,y)):
 def generate_output(rect_array):
 
 	output_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'Output')
+	dataset=pd.read_csv("input.csv")
+	for row in reader:
 
+		PIL_image = Image.open(filename)
+		PIL_draw = ImageDraw.Draw(PIL_image)
 
-	with open("input.csv","rb") as f:
-		reader = csv.reader(f)
-		count=1
+		for i in range(len(rect_array)):
+			#Mapping it to the original File Size and centering it with the rectangle
+			xy = map_xy(rect_array[i].center)
+			xy = center_xy(row[i],xy )
+			PIL_draw.text( xy ,row[i],(28,70,150),font)
 
-		for row in reader:
-
-			PIL_image = Image.open(filename)
-			PIL_draw = ImageDraw.Draw(PIL_image)
-
-			for i in range(len(rect_array)):
-				#Mapping it to the original File Size and centering it with the rectangle
-				xy = map_xy(rect_array[i].center)
-				xy = center_xy(row[i],xy )
-				
-				PIL_draw.text( xy ,row[i],(28,70,150),font)
-
-				output_name =  os.path.join( output_folder , str(count)+".jpg" )
-				
-			count+=1;	
-			PIL_image.save(output_name)
-
-
-				
-
-			#if count==10:
-			#	break
+			output_name =  os.path.join( output_folder , str(count)+".jpg" )
+		count+=1
+		PIL_image.save(output_name)
 
 fonts_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'fonts')
-font = ImageFont.truetype(os.path.join(fonts_path, 'best_font.otf'), 80)
+font = ImageFont.truetype(os.path.join(fonts_path, 'best_font.otf'), 40)
 
 draw_start = False
 to_draw = []
@@ -104,12 +91,9 @@ while running:
 
 			if event.key == pygame.K_RETURN:
 
-				print to_draw[0]
+				print (to_draw[0])
 
-				generate_output(to_draw)				
-				
-				
-
+				generate_output(to_draw)
 			if event.key == pygame.K_BACKSPACE:
 				to_draw.pop()
 

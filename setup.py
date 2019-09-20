@@ -1,6 +1,7 @@
+import gi
 import os
 import sys
-import gtk, pygtk
+from gi.repository import Gtk as gtk
 import pygame
 import csv
 from PIL import Image
@@ -8,7 +9,7 @@ from PIL import ImageFont
 from PIL import ImageDraw 
 
 try:
-	filename = sys.argv[1]
+	filename = input("Enter name of image with extenstion: ")
 
 except:
 	print
@@ -18,7 +19,7 @@ while True:
 		img=pygame.image.load(filename)
 
 	except:
-		filename = raw_input("File not available (Format : name.extention)\nTry again : ") 
+		filename = input("File not available (Format : name.extention)\nTry again : ") 
 
 	else:
 		break
@@ -39,7 +40,6 @@ while width>screen_width or height>screen_height:
 	height/=2
 	scale*=2
 	#print screen_width, width,"\n", screen_height, height
-	
 img = pygame.transform.scale(img,(width,height))
 
 PIL_image = Image.open(filename)
